@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced SL NIC Toolkit V2</title>
+    <style>
+        :root { --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); --card-bg: rgba(255, 255, 255, 0.8); --card-border: rgba(255, 255, 255, 0.6); --text-primary: #0f172a; --text-secondary: #475569; --primary: #4f46e5; --primary-hover: #4338ca; --primary-light: rgba(79, 70, 229, 0.1); --secondary: #64748b; --secondary-hover: #475569; --accent: #0ea5e9; --danger: #ef4444; --danger-light: rgba(239, 68, 68, 0.1); --success: #10b981; --success-light: rgba(16, 185, 129, 0.1); --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05); --glass-blur: blur(20px); --radius-lg: 20px; --radius-md: 14px; --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+        [data-theme="dark"] { --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); --card-bg: rgba(30, 41, 59, 0.75); --card-border: rgba(255, 255, 255, 0.05); --text-primary: #f8fafc; --text-secondary: #94a3b8; --primary: #818cf8; --primary-hover: #6366f1; --primary-light: rgba(129, 140, 248, 0.15); --secondary: #475569; --secondary-hover: #64748b; --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg-gradient); color: var(--text-primary); min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 16px; transition: background var(--transition); }
+        .app-container { width: 100%; max-width: 540px; margin-top: 16px; margin-bottom: 80px; display: flex; flex-direction: column; gap: 16px; animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .card { background: var(--card-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--card-border); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow); }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; }
+        .brand h1 { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.03em; background: linear-gradient(to right, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .theme-toggle { background: var(--card-border); border: none; cursor: pointer; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-primary); transition: var(--transition); }
+        .tabs-nav { display: flex; background: rgba(0, 0, 0, 0.04); padding: 4px; border-radius: var(--radius-md); gap: 4px; }
+        [data-theme="dark"] .tabs-nav { background: rgba(255, 255, 255, 0.04); }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: transparent; color: var(--text-secondary); font-weight: 600; font-size: 0.9rem; border-radius: calc(var(--radius-md) - 4px); cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .tab-btn.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); }
+        .tab-content { display: none; flex-direction: column; gap: 20px; }
+        .tab-content.active { display: flex; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+        .input-field { width: 100%; padding: 14px; border-radius: var(--radius-md); border: 1px solid var(--card-border); background: rgba(255, 255, 255, 0.1); color: var(--text-primary); font-size: 1rem; outline: none; transition: var(--transition); }
+        .input-field:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+        .gender-selector { display: flex; gap: 8px; background: rgba(0, 0, 0, 0.02); padding: 4px; border-radius: var(--radius-md); }
+        .gender-option { flex: 1; position: relative; }
+        .gender-option input { position: absolute; opacity: 0; width: 0; height: 0; }
+        .gender-label { display: flex; align-items: center; justify-content: center; padding: 12px; border-radius: calc(var(--radius-md) - 4px); cursor: pointer; font-size: 0.95rem; font-weight: 600; color: var(--text-secondary); transition: var(--transition); }
+        .gender-option input:checked + .gender-label { background: var(--card-bg); color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .btn-group { display: flex; gap: 10px; }
+        .btn { flex: 1; padding: 14px; border-radius: var(--radius-md); border: none; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25); }
+        .btn-primary:hover { background: var(--primary-hover); }
+        .btn-secondary { background: var(--secondary); color: white; }
+        .btn-secondary:hover { background: var(--secondary-hover); }
+        .btn-accent { background: var(--accent); color: white; }
+        .btn-accent:hover { opacity: 0.9; }
+        .status-panel { display: none; flex-direction: column; gap: 10px; }
+        .status-txt { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+        .progress-track { width: 100%; height: 6px; background: rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden; }
+        .progress-bar { width: 0%; height: 100%; background: linear-gradient(to right, var(--primary), var(--accent)); transition: width 0.05s linear; }
+        .results-section { display: none; flex-direction: column; gap: 12px; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .metric-box { background: rgba(0, 0, 0, 0.02); border: 1px solid var(--card-border); padding: 12px; border-radius: var(--radius-md); text-align: center; }
+        .metric-box span { display: block; font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; }
+        .metric-box strong { font-size: 1.1rem; font-weight: 700; }
+        .list-viewport { max-height: 320px; overflow-y: auto; border-radius: var(--radius-md); background: rgba(0, 0, 0, 0.01); border: 1px solid var(--card-border); padding: 6px; display: flex; flex-direction: column; gap: 6px; }
+        .list-viewport::-webkit-scrollbar { width: 5px; }
+        .list-viewport::-webkit-scrollbar-thumb { background: var(--secondary); border-radius: 10px; }
+        .nic-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: calc(var(--radius-md) - 4px); font-family: monospace; font-size: 1rem; font-weight: 600; }
+        .status-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 0.75rem; padding: 4px 8px; border-radius: 20px; font-weight: 700; }
+        .status-badge.valid { background: var(--success-light); color: var(--success); }
+        .status-badge.invalid { background: var(--danger-light); color: var(--danger); }
+        .decoder-feedback { display: none; flex-direction: column; gap: 14px; animation: fadeIn 0.3s ease; }
+        .validation-card { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; }
+        .validation-card.valid { background: var(--success-light); border: 1px solid var(--success); color: var(--success); }
+        .validation-card.invalid { background: var(--danger-light); border: 1px solid var(--danger); color: var(--danger); }
+        .info-note { font-size: 0.75rem; color: var(--text-secondary); background: rgba(0, 0, 0, 0.02); padding: 8px 12px; border-radius: 8px; border-left: 3px solid var(--secondary); margin-top: -5px; }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table tr { border-bottom: 1px solid var(--card-border); }
+        .data-table td { padding: 12px 6px; font-size: 0.95rem; }
+        .data-table td:first-child { color: var(--text-secondary); font-weight: 600; width: 45%; }
+        .data-table td:last-child { font-weight: 700; text-align: right; }
+        .bulk-upload-zone { border: 2px dashed var(--card-border); padding: 20px; border-radius: var(--radius-md); text-align: center; background: rgba(0, 0, 0, 0.01); cursor: pointer; transition: var(--transition); }
+        .bulk-upload-zone:hover { border-color: var(--primary); background: var(--primary-light); }
+        .bulk-upload-zone p { font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; }
+        .action-dock { display: flex; gap: 10px; margin-top: 6px; }
+        .footer-sig { text-align: center; margin-top: 10px; font-family: 'Caveat', 'Comic Sans MS', cursive, sans-serif; font-size: 1rem; color: var(--text-secondary); opacity: 0.8; letter-spacing: 0.05em; }
+        .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--text-primary); color: var(--card-bg); padding: 10px 20px; border-radius: 30px; font-size: 0.85rem; font-weight: 600; box-shadow: 0 10px 25px rgba(0,0,0,0.15); opacity: 0; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease; z-index: 1000; }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        @media (max-width: 600px) { .dock-container.sticky { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border-top: 1px solid var(--card-border); padding: 12px 16px; z-index: 99; box-shadow: 0 -8px 20px rgba(0,0,0,0.05); } }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="card header">
+            <div class="brand"><h1>SL NIC Toolkit V2</h1></div>
+            <button class="theme-toggle" id="themeToggle"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></button>
+        </header>
+        <nav class="tabs-nav">
+            <button class="tab-btn active" data-target="generatorTab"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v14M5 10l7 7 7-7"/></svg>Generator</button>
+            <button class="tab-btn" data-target="decoderTab"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>Decoder & Bulk</button>
+        </nav>
+        <div class="card tab-content active" id="generatorTab">
+            <div class="form-group"><label>Date of Birth</label><input type="date" id="dob" class="input-field" max="2026-12-31"></div>
+            <div class="form-group">
+                <label>Gender</label>
+                <div class="gender-selector">
+                    <div class="gender-option"><input type="radio" id="male" name="gender" value="male" checked><label for="male" class="gender-label">Male</label></div>
+                    <div class="gender-option"><input type="radio" id="female" name="gender" value="female"><label for="female" class="gender-label">Female</label></div>
+                </div>
+            </div>
+            <div class="btn-group"><button class="btn btn-secondary" id="clearGenBtn">Clear</button><button class="btn btn-primary" id="generateBtn">Generate All</button></div>
+            <div class="status-panel" id="statusPanel">
+                <div class="status-txt"><span id="statusState">Processing Dataset...</span><span id="statusPercent">0%</span></div>
+                <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+            </div>
+            <div class="results-section" id="resultsSection">
+                <div class="metrics-grid">
+                    <div class="metric-box"><span>Total Real Permutations</span><strong id="metricTotal">0</strong></div>
+                    <div class="metric-box"><span>Process Speed</span><strong id="metricTime">0ms</strong></div>
+                </div>
+                <div class="list-viewport" id="nicList"></div>
+                <div class="dock-container" id="dockContainer"><div class="action-dock"><button class="btn btn-secondary" id="exportBtn">Export CSV</button><button class="btn btn-primary" id="copyAllBtn">Copy All</button></div></div>
+            </div>
+        </div>
+        <div class="card tab-content" id="decoderTab">
+            <div class="form-group"><label>Single NIC Check & Decode</label><input type="text" id="nicInput" class="input-field" placeholder="e.g., 951234567V or 200821203216" maxlength="12"></div>
+            <div class="form-group" style="margin-top: 5px;">
+                <label>Bulk CSV Check</label>
+                <div class="bulk-upload-zone" id="uploadZone"><p>📄 Click to Upload NIC List CSV</p><input type="file" id="csvFileInput" accept=".csv" style="display:none;"></div>
+            </div>
+            <div class="decoder-feedback" id="decoderFeedback">
+                <div class="validation-card" id="validationCard"><span id="validationIcon"></span><span id="validationText">Mathematical Structure Check</span></div>
+                <div class="info-note">ℹ️ This validates <strong>Structural Math Consistency</strong>. External database checking (active/revoked status) is restricted to official government servers.</div>
+                <table class="data-table"><tbody id="decoderTableBody"></tbody></table>
+            </div>
+        </div>
+        <footer class="footer-sig">Developer: K CeY | K Sasmitha</footer>
+    </div>
+    <div class="toast" id="toast">Copied successfully!</div>
+
+    <script type="text/javascript">
+        eval(function(p,a,c,k,e,d){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--){d[e(c)]=k[c]||e(c)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('F.G("H",()=>{K l=2026;K e=d.b(\'I\');K y=d.N(\'.W-X\');K z=d.N(\'.W-8\');K A=d.b(\'A\');K s=d.b(\'s\');K u=d.b(\'O\');K P=d.b(\'Q\');K R=d.b(\'S\');K T=d.b(\'U\');K f=d.b(\'f\');K g=d.b(\'g\');K h=d.b(\'h\');K j=d.b(\'j\');K c=d.b(\'c\');K k=d.b(\'k\');K m=d.b(\'m\');K n=d.b(\'n\');K v=d.b(\'v\');K p=d.b(\'p\');K t=d.b(\'t\');K w=d.b(\'w\');K x=d.b(\'x\');K o=d.b(\'o\');K q=d.b(\'q\');K r=d.b(\'r\');L B=[];L i=Y;s.4(\'4\',`${l}-12-31`);e.4(\'2\',()=>{K a=d.9.4(\'4-5\');K b=a===\'6\'?\'7\':\'6\';d.9.4(\'4-5\',b);e.1a=b===\'6\'?`<V 1b="1c://1d.1e.1f/1g/1h" 1i="18" 1j="18" 1k="0 0 24 24" 1l="1m" 1n="1o" 1p="2.5"><1q d="M12 3a6 6 0 009 9 9 9 0 11-9-9Z"/></V>`:`<V 1b="1c://1d.1e.1f/1g/1h" 1i="18" 1j="18" 1k="0 0 24 24" 1l="1m" 1n="1o" 1p="2.5"><1r cx="12" cy="12" r="4"/><1q d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></V>`});y.1s(a=>{a.4(\'2\',()=>{y.1s(b=>b.1t.1u(\'1v\'));z.1s(b=>b.1t.1u(\'1v\'));a.1t.1w(\'1v\');d.b(a.4(\'4-1x\')).1t.1w(\'1v\');M()})});1y D(a){K b=1z 1A(a.1B(),0,0);K c=a-b;1C 1D.1E(c/(1F*1G*1G*24))}u.4(\'2\',()=>{1H(!s.a){D(\'1I 1J a 1K 1L 4 1M.\');1N}1H(i)1O(i);K a=1z 1A(s.a);K b=a.1B();K c=d.N(\'1P[1Q="1R"]:1S\').a;K f=1T.1U();L g=D(a);1H(c===\'1V\')g+=500;K h=1W(g).1X(3,\'0\');K j=[];1H(b<2000){K k=1W(b).1Y(-2);1Z(L i=1;i<=999;i++){K m=1W(i).1X(3,\'0\');j.16(`${k}${h}${m}V`);j.16(`${k}${h}${m}X`)}}1Z(L i=1;i<=9999;i++){j.16(`${b}${h}${1W(i).1X(5,\'0\')}`)}B=[];n.12=\'\';c.13.14=\'none\';f.13.14=\'15\';L k=0;K m=500;1a 20(){K a=11.21(k+m,j.22);K b=d.23();1Z(L i=k;i<a;i++){K c=j[i];B.16(c);K e=d.24(\'25\');e.26=\'27-28\';e.12=`<span>${c}</span><span class="29-2a 2b"><V 2c="10" 2d="10" 1k="0 0 24 24" 1l="1m" 1n="1o" 1p="3"><2e 2f="20 6 9 17 4 12"/></V> 2g 2h</span>`;b.2i(e)}k=a;n.2i(b);K e=11.2j(11.21(k/j.22)*100);h.12=`2k: ${k} 2l`;j.12=`${e}%`;f.13.2m=`${e}%`;1H(k<j.22){i=2n(20,1)}2o{K g=(1T.1U()-f).2p(0);f.13.14=\'none\';k.12=B.22.2q();m.12=`${g}2r`;c.13.14=\'15\';M()}}20()});P.4(\'2\',()=>{1H(i)1O(i);s.a=\'\';B=[];n.12=\'\';f.13.14=\'none\';c.13.14=\'none\';M()});R.4(\'2\',()=>{1H(!B.22)1N;2s.2t.2u(B.2v(\'\\n\')).2w(()=>{D(`2x 2y ${B.22.2q()} 2z!`)})});T.4(\'2\',()=>{1H(!B.22)1N;L a="2A:2B/2C;2D=2E,2F,2G\\n";B.1s((v,b)=>{a+=`${b+1},="${v}"\\n`});K c=d.24(\'a\');c.4(\'2H\',2I(a));c.4(\'2J\',`2K_2L_${s.a}.2M`);d.9.2i(c);c.2N();d.9.2O(c)});p.4(\'1e\',()=>{K a=p.a.2P().2Q();1H(!a){t.13.14=\'none\';1N}K b=2R(a);t.13.14=\'15\';1H(b.2S){w.26="29-2T 2b";w.12=`<V 2c="18" 2d="18" 1k="0 0 24 24" 1l="1m" 1n="1o" 1p="3"><2e 2f="20 6 9 17 4 12"/></V>`;x.12="2U 2V 2W 2X";o.12=`<tr><td>2Y 2Z</td><td>${b.30}</td></tr><tr><td>31 32 33</td><td><strong>${b.34}</strong></td></tr><tr><td>35 36</td><td>${b.37}</td></tr><tr><td>38 (${l})</td><td>${b.39} 3a 3b</td></tr><tr><td>3c 3d 3e</td><td>3f ${b.3g}</td></tr><tr><td>3h 3i 3j</td><td>#${b.3k}</td></tr>`}2o{w.26="29-2T 3l";w.12=`<V 2c="18" 2d="18" 1k="0 0 24 24" 1l="1m" 1n="1o" 1p="3"><3m x1="18" y1="6" x2="6" y2="18"/><3m x1="6" y1="6" x2="18" y2="18"/></V>`;x.12=`3l: ${b.3n}`;o.12=`<tr><td 3o="2" 13="3p-3q:3r; 3s:3t.3u-3v;">3w 3x 3y 3z 40 41 42.</td></tr>`}});D 2R(a){K b=(err)=>({2S:E,3n:err});a=a.3b(/[^0-9VX]/g,"");L c=0;L f=0;L g="";L h="";1H(a.22===10){K j=/^\\d{9}[VX]$/;1H(!j.3c(a))1C b("3d 3e 3f");K k=3g(a.3h(0,2));c=k<50?2000+k:1900+k;f=3g(a.3h(2,5));g=a.3h(5,9);h=`3i 3j 3k 3l (${a.3m(9)})`}2o 1H(a.22===12){K j=/^\\d{12}$/;1H(!j.3c(a))1C b("3n-3o 3p");c=3g(a.3h(0,4));f=3g(a.3h(4,7));g=a.3h(7,12);h="3q 3r 3s 3t 3u"}2o{1C b("3v 1k 22 3w")}L i="3x";L m=f;1H(m>500){i="3y";m-=500}1H(m<1||m>366){1C b("3z 40 41 42 43")}K n=44(c,m);1H(!n)1C b("45 46 47 48 49");1C{2S:E,30:h,34:n,37:i,39:l-c,3g:m,3k:g}}D 44(a,b){K c=1z 1A(a,0,1);c.4a(b);1H(c.1B()!==a)1C Y;K e=c.1B();K f=1W(c.4b()+1).1X(2,\'0\');K g=1W(c.4c()).1X(2,\'0\');1C`${e}-${f}-${g}`}q.4(\'2\',()=>{r.2N()});r.4(\'1e\',(e)=>{K a=e.4d.4e[0];1H(!a)1N;K b=1z 4f();b.4g=4h(a){K c=a.4d.4i.4j(/\\r?\\n/);L f="2A:2B/2C;2D=2E,4k,4l,4m,4n,4o\\n";L g=0;c.1s(a=>{L b=a.3b(/[^a-zA-Z0-9]/g,"").2P().2Q();1H(!b)1N;1H(b==="4p"||b==="4q"||b==="4r")1N;K e=2R(b);g++;1H(e.2S){f+=`="${b}",4s,${e.37},${e.34},${e.39}\\n`}2o{f+=`="${b}",4t,-,-,-\\n`}});1H(g===0){D("4u 4v 4w 4x 4y 4z.");1N}K h=2I(f);K j=d.24(\'a\');j.4(\'2H\',h);j.4(\'2J\',`4A_4B_4C_4D.2M`);d.9.2i(j);j.2N();d.9.2O(j);D(`4E ${g} 4F. 4G 4H!`)};b.4I(a)});D M(){1H(11.4J<=600&&c.13.14===\'15\'&&d.b(\'4K\').1t.4L(\'1v\')){K a=d.9.4M-([11.4N,11.4O].21(b=>b)||0);1H(a>50){v.1t.1w(\'4P\')}2o{v.1t.1u(\'4P\')}}2o{v.1t.1u(\'4P\')}}11.4(\'4Q\',M);11.4(\'4R\',M)});',62,302,'||click||setAttribute|theme|light|dark|content|body|value|getElementById|resultsSection|document|themeToggle|metricTotal|metricTime|nicList|asyncLoopTracker|progressBar|metricPercent|currentYearContext|statusPercent|statusState|validationText|nicInput|uploadZone|csvFileInput|dobInput|decoderFeedback|btnGenerate|btnCopyAll|validationIcon|validationCard|tabButtons|tabContents|toast|masterGeneratedDataset|return|triggerFeedbackToast|true|window|addEventListener|DOMContentLoaded|generatorTab|querySelectorAll|btnClearGen|btnExport|progressBarWidth|svg|tab|btn|null|for|Math|innerHTML|style|display|flex|push|18|width|height|viewBox|fill|none|stroke|currentColor|strokeWidth|path|circle|forEach|classList|remove|active|add|target|function|new|Date|getFullYear|returnMath|floor|performance|now|Male|String|padStart|slice|let|min|length|createDocumentFragment|createElement|div|className|nic|row|status|badge|valid|polyline|points|Valid|Structure|appendChild|round|Generated|NICs|widthPercent|setTimeout|else|toFixed|toLocaleString|ms|navigator|clipboard|writeText|join|then|Copied|all|items|data|text|csv|charset|utf|8|INDEX|VALID_NIC_FORMAT|href|encodeURI|download|NIC|Dataset|csvFile|clickExecutionCallback|removeChild|toUpperCase|trim|parsingValidatorSLNIC|isValid|validation|Format|Classification|StructureClass|Calculated|Birth|Date|derivedDOB|Assigned|Gender|gender|Age|calculatedAge|Years|Old|Day|Code|Index|dayOfYear|Sequential|Serial|ID|serialId|invalid|line|errorToken|colspan|styleText|textAlign|center|color|var|secondary|Correct|character|sequences|to|process|configuration|diagnostics|test|Syntax|mismatch|rules|parseInt|substring|Legacy|Old|System|Layout|charAt|Non|numerical|characters|Modern|New|Specification|Standard|Incorrect|lengthError|Female|Invalid|calendar|day|code|mapping|mapDayIndexToCalendarDate|Leap|date|range|misalignment|error|setDate|getMonth|getDate|target|files|FileReader|onload|event|result|split|INPUT_NIC|VALIDITY|GENDER|BIRTHDAY|AGE_IN_2026|INPUTNIC|VALIDNICFORMAT|INDEX_COLUMN|VALID|INVALID|No|clean|records|found|inside|uploaded|template|Bulk|NIC_Report|Checked|csvFileName|Processed|rows|Report|downloaded|readAsText|innerWidth|generatorTabButton|contains|scrollHeight|innerHeight|scrollY|sticky|scroll|resize'.split('|'),0,{}))
+    </script>
+</body>
+</html>
